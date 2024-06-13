@@ -1,6 +1,6 @@
 # spark-notebooks
 A collection of my work in Scala using spylon kernel in jupyter notebooks through anaconda on Ubuntu 20.
-I created a 4 core/default partitioned spark cluster along with hive and yarn for resource manager. I created the cluster from scratch. I am using java 8/1.8 SE 
+I created a 4 core/default partitioned spark cluster w/ 14756MB RAM along with hive and yarn for resource manager. I created the cluster from scratch. I am using java 8/1.8 SE 
 
 I did this to not use spark-shell and have a better experience where I could work on on my Scala Spark projects.
 I have been workin on Scala FP for 2 years now. 
