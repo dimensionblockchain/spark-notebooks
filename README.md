@@ -8,3 +8,5 @@ I have been working on Scala FP for 2 years now.
 I lost my first VM with almost 2 years of work. 
 
 I am hoping to recreate most of it.
+
+I am using GitKraken for Git staging/push commits.
