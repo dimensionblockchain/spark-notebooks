@@ -4,9 +4,6 @@ I created a 4 core/default partitioned spark cluster w/ 14756MB RAM along with h
 https://harishmasand.com/
 
 I did this to not use spark-shell and have a better experience where I could work on on my Scala Spark projects.
-I have been working on Scala FP for 2 years now. 
-
-I lost my first VM with almost 2 years of work. 
 
 I am hoping to recreate most of it.
 
