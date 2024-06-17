@@ -5,8 +5,6 @@ https://harishmasand.com/
 
 I did this to not use spark-shell and have a better experience where I could work on on my Scala Spark projects.
 
-I am hoping to recreate most of it.
-
 I am using GitKraken for Git staging/push commits.
 
 I will be adding to this with great frequency.
