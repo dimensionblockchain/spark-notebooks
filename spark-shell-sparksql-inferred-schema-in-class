@@ -1,0 +1,68 @@
+Spark context Web UI available at http://10.0.2.15:4043
+Spark context available as 'sc' (master = local[*], app id = local-1718592221751).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.4
+      /_/
+         
+Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_261)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val yahooStocks = sc.textFile("/spark-files/yahoo_stocks.csv")
+yahooStocks: org.apache.spark.rdd.RDD[String] = /spark-files/yahoo_stocks.csv MapPartitionsRDD[1] at textFile at <console>:24
+
+scala> yahooStocks.collect
+res0: Array[String] = Array(Date,Open,High,Low,Close,Volume,AdjClose, 2001-01-02,30.3125,30.375,27.5,28.1875,21939200,14.09375, 2000-12-29,30.3125,31.1875,29.5625,30.0625,20893400,15.03125, 2000-12-28,29.4375,31.75,29.125,31,24374600,15.5, 2000-12-27,31,31.5,29.125,29.75,22045400,14.875, 2000-12-26,32,34,30.125,31.1875,37536200,15.59375, 2000-12-22,26.4375,29.875,26.0625,29.5625,28347400,14.78125, 2000-12-21,26.75,28.25,25.0625,25.625,27794400,12.8125, 2000-12-20,25.8125,28.375,25.5,27.9375,44862800,13.96875, 2000-12-19,30.5625,31.9687,28,28,36131600,14, 2000-12-18,33.875,34,30.25,32,31697600,16, 2000-12-15,32,34,31.0625,33,40448000,16.5, 2000-12-14,35.3125,35.9062,31.9375,32,20899800,16, 2000-12-13,38.3125,38.625,34.25,34.875,33640400,17.4375, 2000-12-12,33.25,39.5,32.9375,35.8125,7927...
+scala> val header = yahooStocks.first
+header: String = Date,Open,High,Low,Close,Volume,AdjClose
+
+scala> val stockData = yahooStocks.filter(_ != header)
+stockData: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[2] at filter at <console>:27
+
+scala> stockData.collect
+res1: Array[String] = Array(2001-01-02,30.3125,30.375,27.5,28.1875,21939200,14.09375, 2000-12-29,30.3125,31.1875,29.5625,30.0625,20893400,15.03125, 2000-12-28,29.4375,31.75,29.125,31,24374600,15.5, 2000-12-27,31,31.5,29.125,29.75,22045400,14.875, 2000-12-26,32,34,30.125,31.1875,37536200,15.59375, 2000-12-22,26.4375,29.875,26.0625,29.5625,28347400,14.78125, 2000-12-21,26.75,28.25,25.0625,25.625,27794400,12.8125, 2000-12-20,25.8125,28.375,25.5,27.9375,44862800,13.96875, 2000-12-19,30.5625,31.9687,28,28,36131600,14, 2000-12-18,33.875,34,30.25,32,31697600,16, 2000-12-15,32,34,31.0625,33,40448000,16.5, 2000-12-14,35.3125,35.9062,31.9375,32,20899800,16, 2000-12-13,38.3125,38.625,34.25,34.875,33640400,17.4375, 2000-12-12,33.25,39.5,32.9375,35.8125,79275800,17.90625, 2000-12-11,33.625,37.0625,3...
+scala> case class YahooStockPrices(Date: String,Open: Float, High: Float, Low: Float, Close: Float, Volume: Int, AdjClose: Float)
+defined class YahooStockPrices
+
+scala> val stockPricesYahoo = stockData.map(_.split)).map(row => YahooStockPrices(row(0),row(1).trim.toFloat,row(2).trim.toFloat,row(3).trim.toFloat,row(4).trim.toFloat,row(5).trim.toInt,row(6).trim.toFloat)).toDF()
+<console>:1: error: ';' expected but ')' found.
+val stockPricesYahoo = stockData.map(_.split)).map(row => YahooStockPrices(row(0),row(1).trim.toFloat,row(2).trim.toFloat,row(3).trim.toFloat,row(4).trim.toFloat,row(5).trim.toInt,row(6).trim.toFloat)).toDF()
+                                             ^
+
+scala> val stockPricesYahoo = stockData.map(_.split(",")).map(row => YahooStockPrices(row(0),row(1).trim.toFloat,row(2).trim.toFloat,row(3).trim.toFloat,row(4).trim.toFloat,row(5).trim.toInt,row(6).trim.toFloat)).toDF()
+stockPricesYahoo: org.apache.spark.sql.DataFrame = [Date: string, Open: float ... 5 more fields]
+
+scala> stockPricesYahoo.show
++----------+-------+-------+-------+-------+--------+--------+
+|      Date|   Open|   High|    Low|  Close|  Volume|AdjClose|
++----------+-------+-------+-------+-------+--------+--------+
+|2001-01-02|30.3125| 30.375|   27.5|28.1875|21939200|14.09375|
+|2000-12-29|30.3125|31.1875|29.5625|30.0625|20893400|15.03125|
+|2000-12-28|29.4375|  31.75| 29.125|   31.0|24374600|    15.5|
+|2000-12-27|   31.0|   31.5| 29.125|  29.75|22045400|  14.875|
+|2000-12-26|   32.0|   34.0| 30.125|31.1875|37536200|15.59375|
+|2000-12-22|26.4375| 29.875|26.0625|29.5625|28347400|14.78125|
+|2000-12-21|  26.75|  28.25|25.0625| 25.625|27794400| 12.8125|
+|2000-12-20|25.8125| 28.375|   25.5|27.9375|44862800|13.96875|
+|2000-12-19|30.5625|31.9687|   28.0|   28.0|36131600|    14.0|
+|2000-12-18| 33.875|   34.0|  30.25|   32.0|31697600|    16.0|
+|2000-12-15|   32.0|   34.0|31.0625|   33.0|40448000|    16.5|
+|2000-12-14|35.3125|35.9062|31.9375|   32.0|20899800|    16.0|
+|2000-12-13|38.3125| 38.625|  34.25| 34.875|33640400| 17.4375|
+|2000-12-12|  33.25|   39.5|32.9375|35.8125|79275800|17.90625|
+|2000-12-11| 33.625|37.0625| 30.625| 33.875|71038800| 16.9375|
+|2000-12-08| 37.125| 37.125| 32.125|34.9375|49184000|17.46875|
+|2000-12-07|36.0625|36.2187|   31.5|34.9375|55136200|17.46875|
+|2000-12-06| 41.625|42.9375| 37.125|   37.5|32559800|   18.75|
+|2000-12-05|39.6875|   44.0|39.3125| 43.875|30714800| 21.9375|
+|2000-12-04|38.4375|39.3125|36.1875|37.9375|29997600|18.96875|
++----------+-------+-------+-------+-------+--------+--------+
+only showing top 20 rows
+
+
+scala> 
+
